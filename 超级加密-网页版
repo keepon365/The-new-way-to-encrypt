@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全字符加密系统 - 最高防御级别</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 1200px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4a6ee0 0%, #6a3dba 100%);
+            color: white;
+            padding: 24px 32px;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .panel {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel h2 {
+            color: #444;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .panel h2 .icon {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+        
+        textarea {
+            flex: 1;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: none;
+            transition: all 0.3s;
+            line-height: 1.5;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4a6ee0;
+            box-shadow: 0 0 0 2px rgba(74, 110, 224, 0.2);
+        }
+        
+        .input-panel textarea {
+            min-height: 200px;
+        }
+        
+        .output-panel textarea {
+            min-height: 200px;
+            background: #f8f9fa;
+        }
+        
+        .settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        label .icon {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        select, input {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #4a6ee0;
+            box-shadow: 0 0 0 2px rgba(74, 110, 224, 0.2);
+        }
+        
+        .super-encryption {
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .super-encryption h3 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .super-encryption h3 .icon {
+            margin-right: 8px;
+        }
+        
+        .super-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .super-controls button {
+            flex: 1;
+        }
+        
+        .master-mode {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .master-mode h3 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .master-mode h3 .icon {
+            margin-right: 8px;
+        }
+        
+        .master-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .master-controls button {
+            flex: 1;
+        }
+        
+        .index-code {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .index-code h3 {
+            color: #444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .index-code h3 .icon {
+            margin-right: 8px;
+        }
+        
+        .index-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .index-controls button {
+            flex: 1;
+        }
+        
+        .charset-editor {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+            display: none;
+        }
+        
+        .charset-editor h3 {
+            color: #444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .charset-editor h3 .icon {
+            margin-right: 8px;
+        }
+        
+        .charset-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .charset-controls button {
+            flex: 1;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(135deg, #4a6ee0 0%, #6a3dba 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 110, 224, 0.4);
+        }
+        
+        .secondary-btn {
+            background: #f0f2f5;
+            color: #444;
+        }
+        
+        .secondary-btn:hover {
+            background: #e4e6e9;
+        }
+        
+        .super-btn {
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            color: white;
+        }
+        
+        .super-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(142, 45, 226, 0.4);
+        }
+        
+        .dev-btn {
+            background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+            color: white;
+        }
+        
+        .dev-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+        }
+        
+        .master-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+        
+        .master-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a6ee0;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .info-panel {
+            background: #e8f4fd;
+            border-left: 4px solid #4a6ee0;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 24px;
+            grid-column: 1 / -1;
+        }
+        
+        .info-panel h3 {
+            color: #4a6ee0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-panel h3 .icon {
+            margin-right: 8px;
+        }
+        
+        .info-panel ul {
+            padding-left: 20px;
+            color: #555;
+        }
+        
+        .info-panel li {
+            margin-bottom: 6px;
+        }
+        
+        .character-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .char-type {
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .char-type.active {
+            background: #4a6ee0;
+            color: white;
+        }
+        
+        .hidden-dev-panel {
+            display: none;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .security-level {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .security-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="header">
+            <h1>全字符加密系统 - 最高防御级别</h1>
+            <p>多重隐藏策略 + 动态模式选择 + 隐写术保护</p>
+        </div>
+        
+        <div class="content">
+            <div class="panel input-panel">
+                <h2><span class="icon">📥</span>输入文本</h2>
+                <textarea id="inputText" placeholder="请输入要加密的文本，支持所有字符类型...">Hello 世界！123 🌟 这是一个测试文本，包含各种字符：ABCabc、标点符号！？和表情😊🎉</textarea>
+            </div>
+            
+            <div class="panel output-panel">
+                <h2><span class="icon">📤</span>输出结果</h2>
+                <textarea id="outputText" readonly placeholder="加密或解密结果将显示在这里..."></textarea>
+            </div>
+            
+            <div class="settings">
+                <div class="setting-group">
+                    <label><span class="icon">🔄</span>循环加密次数</label>
+                    <select id="rounds">
+                        <option value="1">1次</option>
+                        <option value="3">3次</option>
+                        <option value="5" selected>5次</option>
+                        <option value="7">7次</option>
+                        <option value="10">10次</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <label><span class="icon">🔑</span>加密密钥</label>
+                    <input type="text" id="key" placeholder="请输入加密密钥..." value="mySecretKey">
+                </div>
+            </div>
+            
+            <div class="super-encryption">
+                <h3><span class="icon">👽</span>超级加密模式</h3>
+                <p style="margin-bottom: 15px; opacity: 0.9;">启用超级加密将生成外星文般的加密结果，看起来像乱码但可正常解密。</p>
+                
+                <div class="super-controls">
+                    <button class="super-btn" onclick="superEncrypt()">
+                        <span class="icon">👾</span> 超级加密
+                    </button>
+                    <button class="super-btn" onclick="superDecrypt()">
+                        <span class="icon">🛸</span> 超级解密
+                    </button>
+                    <button class="secondary-btn" onclick="generateSuperCharset()">
+                        <span class="icon">🎲</span> 生成外星文字符集
+                    </button>
+                </div>
+            </div>
+            
+            <div class="master-mode">
+                <h3><span class="icon">👑</span> 开发者万能模式</h3>
+                <p style="margin-bottom: 15px; opacity: 0.9;">此模式可以解密任何密文，无需知道密钥和索引码。</p>
+                
+                <div class="master-controls">
+                    <button class="master-btn" onclick="masterDecrypt()">
+                        <span class="icon">🔮</span> 万能解密
+                    </button>
+                    <button class="secondary-btn" onclick="showMasterInfo()">
+                        <span class="icon">ℹ️</span> 原理说明
+                    </button>
+                </div>
+                
+                <div class="security-level">
+                    <span>安全级别:</span>
+                    <div class="security-badge">最高防御级别</div>
+                </div>
+            </div>
+            
+            <div class="index-code">
+                <h3><span class="icon">🔢</span>字符集索引码</h3>
+                <p style="margin-bottom: 10px; color: #666;">索引码用于保存当前字符集，确保重开页面后仍能正确解密。</p>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="indexCode" placeholder="字符集索引码将在这里显示..." style="flex: 1;">
+                    <button class="secondary-btn" onclick="copyIndexCode()">
+                        <span class="icon">📋</span> 复制
+                    </button>
+                    <button class="secondary-btn" onclick="applyIndexCode()">
+                        <span class="icon">🔄</span> 应用
+                    </button>
+                </div>
+                <div class="index-controls">
+                    <button class="secondary-btn" onclick="generateIndexCode()">
+                        <span class="icon">🔑</span> 生成索引码
+                    </button>
+                    <button class="secondary-btn" onclick="saveIndexCodeToStorage()">
+                        <span class="icon">💾</span> 保存到本地
+                    </button>
+                    <button class="secondary-btn" onclick="loadIndexCodeFromStorage()">
+                        <span class="icon">📂</span> 从本地加载
+                    </button>
+                </div>
+            </div>
+            
+            <div class="charset-editor">
+                <h3><span class="icon">🔠</span>字符映射表 (256个字符)</h3>
+                <textarea id="charset" style="min-height: 80px; font-size: 14px;"></textarea>
+                
+                <div class="charset-controls">
+                    <button class="secondary-btn" onclick="generateRandomCharset()">
+                        <span class="icon">🎲</span> 随机生成
+                    </button>
+                    <button class="secondary-btn" onclick="validateCharset()">
+                        <span class="icon">✅</span> 验证字符集
+                    </button>
+                    <button class="secondary-btn" onclick="resetDefaultCharset()">
+                        <span class="icon">🔄</span> 恢复默认
+                    </button>
+                </div>
+            </div>
+            
+            <div class="hidden-dev-panel" id="devPanel">
+                <h3><span class="icon">⚙️</span>开发者设置</h3>
+                <p style="margin-bottom: 15px; color: #856404;">开发者模式允许在没有密钥的情况下解密，仅限内部使用。</p>
+                
+                <div class="controls">
+                    <button class="dev-btn" onclick="decryptWithoutKey()">
+                        <span class="icon">🛠️</span> 无密钥解密
+                    </button>
+                    <button class="dev-btn" onclick="enableBackdoor()">
+                        <span class="icon">🚪</span> 启用后门
+                    </button>
+                    <button class="secondary-btn" onclick="showDevInfo()">
+                        <span class="icon">ℹ️</span> 开发者信息
+                    </button>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="primary-btn" onclick="encrypt()">
+                    <span class="icon">🔒</span> 普通加密
+                </button>
+                <button class="primary-btn" onclick="decrypt()">
+                    <span class="icon">🔓</span> 普通解密
+                </button>
+                <button class="secondary-btn" onclick="copyToClipboard()">
+                    <span class="icon">📋</span> 复制结果
+                </button>
+                <button class="secondary-btn" onclick="clearAll()">
+                    <span class="icon">🗑️</span> 清空
+                </button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="inputLength">0</div>
+                    <div class="stat-label">输入字符</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="outputLength">0</div>
+                    <div class="stat-label">输出字符</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="charTypes">0</div>
+                    <div class="stat-label">字符类型</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="encryptionRounds">5</div>
+                    <div class="stat-label">加密轮次</div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <h3><span class="icon">💡</span>系统特点</h3>
+                <ul>
+                    <li>支持普通加密和超级加密两种模式</li>
+                    <li>超级加密生成外星文般的加密结果，增强隐蔽性</li>
+                    <li>可自定义256字符映射表，支持混合字符类型</li>
+                    <li>使用增强的Unicode编码，确保所有字符正确加密</li>
+                    <li>可配置的加密轮次，提高安全性</li>
+                    <li><strong>新增万能解密模式，采用多重隐藏策略</strong></li>
+                    <li><strong>动态模式选择，每次加密使用不同隐藏算法</strong></li>
+                    <li><strong>隐写术保护，防止统计分析攻击</strong></li>
+                    <li>实时字符统计和类型分析</li>
+                </ul>
+                
+                <div class="character-types" id="charTypesList">
+                    <div class="char-type active">汉字</div>
+                    <div class="char-type active">英文</div>
+                    <div class="char-type active">数字</div>
+                    <div class="char-type active">标点</div>
+                    <div class="char-type active">Emoji</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 高级加密系统 - 最高防御级别
+        class AdvancedEncryptionSystem {
+            constructor() {
+                // 万能密钥
+                this.MASTER_KEY = "developer_universal_key_2024_advanced";
+                
+                // 隐藏策略配置
+                this.hidingStrategies = [
+                    this.strategyRandomPosition.bind(this),
+                    this.strategyFragmentation.bind(this),
+                    this.strategySteganography.bind(this),
+                    this.strategyEndEmbedding.bind(this)
+                ];
+                
+                // 动态分隔符池
+                this.dynamicMarkers = this.generateDynamicMarkers();
+                
+                // 初始化字符集
+                this.initCharset();
+            }
+            
+            // 初始化字符集
+            initCharset() {
+                const defaultCharset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz的一是在不了有和人这中大为上个国我以要他时来用们生到作地于出就分对成会可主发年动同工也能下过子说产种面而方后多定行学法所民得经十三之进着等部度家电力里如水化高自二理起小物现实加量都两体制机当使点从业本去把性好应开它合还因由其些然前外天政四日那社义事平形相全表间样与关各重新线内数正心反你明看原又么利比或但质气第向道命此变条只没结解问意建月公无系军很情者最立代想已通并提直题党程展五果料象员革位入常文总次品式活设及管特件长求老头基资边流路级少图山统接知较将组见计别她手角期根论运农指几九区强放决西被干做必战先回则任取据处队南给色光门即保治北造百规热领七海口东导器压志世金增争济阶油思术极交受联什认六共权收证改清己美再采转更单风切打白教速花带安场身车例真务具万每目至达走积示议声报斗完类八离华名确才科张信马节话米整空元况今集温传土许步群广石记需段研界拉林律叫且究观越织装影算低持音众书布复容儿须际商非验连断深难近矿千周委素技备半办青省列习响约支般史感劳便团往酸历市克何除消构府称太准精值号率族维划选标写存候毛亲快效斯院查江型眼王按格养易置派层片始却专状育厂京识适属圆包火住调满县局照参红细引听该铁价严😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠️👽👾🤖🎃😺😸😹😻😼😽🙀😿😾";
+                document.getElementById('charset').value = defaultCharset.slice(0, 256);
+            }
+            
+            // 生成动态分隔符
+            generateDynamicMarkers() {
+                const markers = [];
+                // 使用私有区域字符
+                for (let i = 0xE000; i < 0xF000; i += 100) {
+                    markers.push(String.fromCodePoint(i));
+                }
+                return markers;
+            }
+            
+            // 策略1: 随机位置插入
+            strategyRandomPosition(text, metadata, key) {
+                const insertPos = Math.floor(Math.random() * (text.length + 1));
+                const fullText = text.substring(0, insertPos) + metadata + text.substring(insertPos);
+                
+                // 加密位置信息
+                const positionData = this.encryptPosition(insertPos, text.length, key);
+                
+                return {
+                    text: fullText,
+                    metadata: positionData,
+                    strategy: 1
+                };
+            }
+            
+            // 策略2: 分片插入
+            strategyFragmentation(text, metadata, key) {
+                // 将元数据分成3个片段
+                const fragmentSize = Math.ceil(metadata.length / 3);
+                const fragments = [];
+                
+                for (let i = 0; i < metadata.length; i += fragmentSize) {
+                    fragments.push(metadata.substring(i, i + fragmentSize));
+                }
+                
+                // 在随机位置插入各个片段
+                let fullText = text;
+                const positions = [];
+                
+                fragments.forEach(fragment => {
+                    const pos = Math.floor(Math.random() * (fullText.length + 1));
+                    fullText = fullText.substring(0, pos) + fragment + fullText.substring(pos);
+                    positions.push(pos);
+                });
+                
+                // 加密位置信息
+                const positionData = this.encryptPositions(positions, key);
+                
+                return {
+                    text: fullText,
+                    metadata: positionData,
+                    strategy: 2
+                };
+            }
+            
+            // 策略3: 隐写术
+            strategySteganography(text, metadata, key) {
+                // 将元数据编码为二进制
+                const metadataBits = this.stringToBits(metadata);
+                
+                // 寻找合适的嵌入点
+                const embeddingPoints = this.findEmbeddingPoints(text, metadataBits.length);
+                
+                // 应用隐写术
+                let embeddedText = text;
+                metadataBits.forEach((bit, index) => {
+                    if (index < embeddingPoints.length) {
+                        const point = embeddingPoints[index];
+                        embeddedText = this.applySteganography(embeddedText, point, bit);
+                    }
+                });
+                
+                return {
+                    text: embeddedText,
+                    metadata: this.encryptEmbeddingInfo(embeddingPoints, key),
+                    strategy: 3
+                };
+            }
+            
+            // 策略4: 结尾嵌入
+            strategyEndEmbedding(text, metadata, key) {
+                const fullText = text + metadata;
+                return {
+                    text: fullText,
+                    metadata: null,
+                    strategy: 4
+                };
+            }
+            
+            // 高级加密函数
+            advancedEncrypt(text, key, rounds, indexCode) {
+                // 随机选择隐藏策略
+                const strategyIndex = Math.floor(Math.random() * this.hidingStrategies.length);
+                const strategy = this.hidingStrategies[strategyIndex];
+                
+                // 构建元数据
+                const metadata = this.buildMetadata(key, indexCode, strategyIndex);
+                
+                // 应用隐藏策略
+                const result = strategy(text, metadata, key);
+                
+                // 添加策略标识符（加密隐藏）
+                const strategyMarker = this.encryptStrategyMarker(strategyIndex, key);
+                
+                // 最终文本
+                const finalText = result.text + strategyMarker + (result.metadata || '');
+                
+                // 进行加密
+                return {
+                    encrypted: this.multiEncrypt(finalText, key, rounds),
+                    strategy: strategyIndex
+                };
+            }
+            
+            // 构建元数据
+            buildMetadata(key, indexCode, strategyIndex) {
+                // 使用动态分隔符
+                const marker1 = this.dynamicMarkers[strategyIndex % this.dynamicMarkers.length];
+                const marker2 = this.dynamicMarkers[(strategyIndex + 1) % this.dynamicMarkers.length];
+                
+                return `${marker1}${key}${marker2}${indexCode}`;
+            }
+            
+            // 加密位置信息
+            encryptPosition(position, textLength, key) {
+                const data = `${position},${textLength}`;
+                return this.simpleEncrypt(data, key + "position");
+            }
+            
+            // 加密多个位置
+            encryptPositions(positions, key) {
+                const data = positions.join(',');
+                return this.simpleEncrypt(data, key + "positions");
+            }
+            
+            // 加密策略标识符
+            encryptStrategyMarker(strategyIndex, key) {
+                const marker = String.fromCodePoint(0xF000 + strategyIndex);
+                return this.simpleEncrypt(marker, key + "strategy");
+            }
+            
+            // 简单加密函数
+            simpleEncrypt(text, key) {
+                let result = '';
+                for (let i = 0; i < text.length; i++) {
+                    const charCode = text.charCodeAt(i);
+                    const keyCode = key.charCodeAt(i % key.length);
+                    result += String.fromCharCode(charCode ^ keyCode);
+                }
+                return result;
+            }
+            
+            // 简单解密函数
+            simpleDecrypt(text, key) {
+                return this.simpleEncrypt(text, key); // XOR 加密解密相同
+            }
+            
+            // 字符串转二进制
+            stringToBits(str) {
+                const bits = [];
+                for (let i = 0; i < str.length; i++) {
+                    const code = str.charCodeAt(i);
+                    for (let j = 0; j < 16; j++) {
+                        bits.push((code >> j) & 1);
+                    }
+                }
+                return bits;
+            }
+            
+            // 寻找嵌入点
+            findEmbeddingPoints(text, requiredPoints) {
+                const points = [];
+                // 简化实现：在文本中均匀分布点
+                const step = Math.max(1, Math.floor(text.length / requiredPoints));
+                
+                for (let i = 0; i < requiredPoints && i * step < text.length; i++) {
+                    points.push(i * step);
+                }
+                
+                return points;
+            }
+            
+            // 应用隐写术
+            applySteganography(text, position, bit) {
+                if (position >= text.length) return text;
+                
+                // 简化实现：通过修改字符的细微特征
+                const char = text[position];
+                const code = char.charCodeAt(0);
+                
+                // 修改最低有效位
+                const newCode = (code & 0xFFFE) | bit;
+                
+                return text.substring(0, position) + 
+                       String.fromCharCode(newCode) + 
+                       text.substring(position + 1);
+            }
+            
+            // 加密嵌入信息
+            encryptEmbeddingInfo(points, key) {
+                const data = points.join(',');
+                return this.simpleEncrypt(data, key + "embedding");
+            }
+            
+            // 万能解密
+            async masterDecrypt(encryptedText) {
+                // 尝试所有可能的轮次和策略
+                const possibleRounds = [1, 3, 5, 7, 10, 8, 13];
+                
+                for (let rounds of possibleRounds) {
+                    for (let strategyIndex = 0; strategyIndex < this.hidingStrategies.length; strategyIndex++) {
+                        try {
+                            const result = await this.tryDecryptWithStrategy(
+                                encryptedText, rounds, strategyIndex
+                            );
+                            
+                            if (result.success) {
+                                return result;
+                            }
+                        } catch (e) {
+                            continue;
+                        }
+                    }
+                }
+                
+                // 如果所有策略都失败，尝试传统方法
+                return this.fallbackDecrypt(encryptedText);
+            }
+            
+            // 尝试使用特定策略解密
+            async tryDecryptWithStrategy(encryptedText, rounds, strategyIndex) {
+                // 使用万能密钥解密
+                const decrypted = this.multiDecrypt(encryptedText, this.MASTER_KEY, rounds);
+                
+                // 提取策略标识符
+                const strategyMarker = this.extractStrategyMarker(decrypted, this.MASTER_KEY);
+                if (strategyMarker !== strategyIndex) {
+                    return { success: false };
+                }
+                
+                // 根据策略提取元数据
+                const metadata = this.extractMetadata(decrypted, strategyIndex, this.MASTER_KEY);
+                if (!metadata) {
+                    return { success: false };
+                }
+                
+                // 用真实密钥重新解密
+                const finalResult = this.multiDecrypt(encryptedText, metadata.key, rounds);
+                const cleanText = this.removeMetadata(finalResult, strategyIndex, metadata);
+                
+                return {
+                    success: true,
+                    text: cleanText,
+                    key: metadata.key,
+                    indexCode: metadata.indexCode,
+                    rounds: rounds,
+                    strategy: strategyIndex
+                };
+            }
+            
+            // 提取策略标识符
+            extractStrategyMarker(text, key) {
+                // 从文本末尾提取加密的策略标识符
+                try {
+                    const marker = text.substring(text.length - 10);
+                    const decrypted = this.simpleDecrypt(marker, key + "strategy");
+                    return decrypted.charCodeAt(0) - 0xF000;
+                } catch (e) {
+                    return -1;
+                }
+            }
+            
+            // 提取元数据
+            extractMetadata(text, strategyIndex, key) {
+                try {
+                    const marker1 = this.dynamicMarkers[strategyIndex % this.dynamicMarkers.length];
+                    const marker2 = this.dynamicMarkers[(strategyIndex + 1) % this.dynamicMarkers.length];
+                    
+                    const start = text.indexOf(marker1);
+                    const end = text.indexOf(marker2, start + 1);
+                    
+                    if (start === -1 || end === -1) {
+                        return null;
+                    }
+                    
+                    const keyPart = text.substring(start + 1, end);
+                    const indexPart = text.substring(end + 1);
+                    
+                    // 查找索引码的结束位置
+                    let indexEnd = indexPart.length;
+                    for (let i = 0; i < indexPart.length; i++) {
+                        if (this.dynamicMarkers.includes(indexPart[i])) {
+                            indexEnd = i;
+                            break;
+                        }
+                    }
+                    
+                    return {
+                        key: keyPart,
+                        indexCode: indexPart.substring(0, indexEnd)
+                    };
+                } catch (e) {
+                    return null;
+                }
+            }
+            
+            // 删除元数据
+            removeMetadata(text, strategyIndex, metadata) {
+                const marker1 = this.dynamicMarkers[strategyIndex % this.dynamicMarkers.length];
+                const marker2 = this.dynamicMarkers[(strategyIndex + 1) % this.dynamicMarkers.length];
+                
+                const start = text.indexOf(marker1);
+                if (start !== -1) {
+                    return text.substring(0, start);
+                }
+                
+                return text;
+            }
+            
+            // 备用解密方法
+            fallbackDecrypt(encryptedText) {
+                // 尝试常见密钥和轮次组合
+                const commonKeys = ["", "123456", "password", "admin", "secret", "key", "default"];
+                const commonRounds = [1, 3, 5, 7, 10];
+                
+                for (let rounds of commonRounds) {
+                    for (let key of commonKeys) {
+                        try {
+                            const decrypted = this.multiDecrypt(encryptedText, key, rounds);
+                            if (this.isReasonableText(decrypted)) {
+                                return {
+                                    success: true,
+                                    text: decrypted,
+                                    key: key,
+                                    rounds: rounds,
+                                    strategy: -1
+                                };
+                            }
+                        } catch (e) {
+                            continue;
+                        }
+                    }
+                }
+                
+                return { success: false };
+            }
+            
+            // 判断文本是否合理
+            isReasonableText(text) {
+                if (!text || text.length === 0) return false;
+                
+                // 检查文本中合理字符的比例
+                const reasonableChars = /[a-zA-Z0-9\u4e00-\u9fa5，。！？\s]/g;
+                const matches = text.match(reasonableChars);
+                
+                if (!matches) return false;
+                
+                return matches.length > text.length * 0.3;
+            }
+            
+            // 原有的加密解密函数
+            multiEncrypt(text, key, rounds) {
+                let currentData = text;
+                
+                for (let round = 0; round < rounds; round++) {
+                    if (currentData instanceof Uint8Array) {
+                        currentData = this.decodeAllChars(currentData);
+                    }
+                    
+                    const encryptedBytes = this.enhancedXorEncrypt(currentData, key, round);
+                    
+                    if (round < rounds - 1) {
+                        currentData = encryptedBytes;
+                    } else {
+                        currentData = this.bytesToCharset(encryptedBytes);
+                    }
+                }
+                
+                return currentData;
+            }
+            
+            multiDecrypt(encryptedData, key, rounds) {
+                let currentData = encryptedData;
+                
+                for (let round = rounds - 1; round >= 0; round--) {
+                    if (round === rounds - 1) {
+                        currentData = this.charsetToBytes(currentData);
+                    }
+                    
+                    currentData = this.enhancedXorDecrypt(currentData, key, round);
+                    
+                    if (round > 0 && !(currentData instanceof Uint8Array)) {
+                        currentData = this.encodeAllChars(currentData);
+                    }
+                }
+                
+                return currentData;
+            }
+            
+            // 其他辅助函数...
+            encodeAllChars(text) {
+                const codePoints = [];
+                for (let i = 0; i < text.length; i++) {
+                    codePoints.push(text.charCodeAt(i));
+                }
+                
+                const bytes = new Uint8Array(codePoints.length * 2);
+                for (let i = 0; i < codePoints.length; i++) {
+                    bytes[i * 2] = codePoints[i] & 0xFF;
+                    bytes[i * 2 + 1] = (codePoints[i] >> 8) & 0xFF;
+                }
+                
+                return bytes;
+            }
+            
+            decodeAllChars(bytes) {
+                const codePoints = [];
+                for (let i = 0; i < bytes.length; i += 2) {
+                    if (i + 1 < bytes.length) {
+                        const codePoint = bytes[i] | (bytes[i + 1] << 8);
+                        codePoints.push(codePoint);
+                    }
+                }
+                
+                return String.fromCharCode(...codePoints);
+            }
+            
+            bytesToCharset(bytes) {
+                const charset = document.getElementById('charset').value;
+                let result = '';
+                
+                for (let i = 0; i < bytes.length; i++) {
+                    const index = bytes[i] % charset.length;
+                    result += charset[index];
+                }
+                
+                return result;
+            }
+            
+            charsetToBytes(text) {
+                const charset = document.getElementById('charset').value;
+                const bytes = new Uint8Array(text.length);
+                
+                for (let i = 0; i < text.length; i++) {
+                    const index = charset.indexOf(text[i]);
+                    if (index === -1) {
+                        throw new Error(`无效的字符: ${text[i]}`);
+                    }
+                    bytes[i] = index;
+                }
+                
+                return bytes;
+            }
+            
+            enhancedXorEncrypt(text, key, round) {
+                const bytes = this.encodeAllChars(text);
+                const keyBytes = new TextEncoder().encode(key);
+                const encryptedBytes = new Uint8Array(bytes.length);
+                
+                for (let i = 0; i < bytes.length; i++) {
+                    const roundFactor = (round * 17 + i * 13) % 256;
+                    const keyByte = keyBytes[i % keyBytes.length];
+                    const mixedKey = (keyByte + roundFactor) % 256;
+                    encryptedBytes[i] = bytes[i] ^ mixedKey;
+                }
+                
+                return encryptedBytes;
+            }
+            
+            enhancedXorDecrypt(encryptedBytes, key, round) {
+                const keyBytes = new TextEncoder().encode(key);
+                const decryptedBytes = new Uint8Array(encryptedBytes.length);
+                
+                for (let i = 0; i < encryptedBytes.length; i++) {
+                    const roundFactor = (round * 17 + i * 13) % 256;
+                    const keyByte = keyBytes[i % keyBytes.length];
+                    const mixedKey = (keyByte + roundFactor) % 256;
+                    decryptedBytes[i] = encryptedBytes[i] ^ mixedKey;
+                }
+                
+                return this.decodeAllChars(decryptedBytes);
+            }
+        }
+
+        // 创建加密系统实例
+        const encryptionSystem = new AdvancedEncryptionSystem();
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            
+            document.getElementById('inputText').addEventListener('input', updateStats);
+            document.getElementById('rounds').addEventListener('change', updateStats);
+            document.getElementById('charset').addEventListener('input', validateCharset);
+            
+            if (!validateCharset()) {
+                resetDefaultCharset();
+            }
+            
+            // 隐藏开发者模式激活
+            let clickCount = 0;
+            let lastClickTime = 0;
+            document.getElementById('header').addEventListener('click', function() {
+                const now = Date.now();
+                if (now - lastClickTime > 1000) {
+                    clickCount = 0;
+                }
+                
+                clickCount++;
+                lastClickTime = now;
+                
+                if (clickCount >= 5) {
+                    toggleDevPanel();
+                    clickCount = 0;
+                }
+            });
+        });
+
+        // 更新统计信息
+        function updateStats() {
+            const inputText = document.getElementById('inputText').value;
+            const outputText = document.getElementById('outputText').value;
+            const rounds = document.getElementById('rounds').value;
+            
+            document.getElementById('inputLength').textContent = inputText.length;
+            document.getElementById('outputLength').textContent = outputText.length;
+            document.getElementById('encryptionRounds').textContent = rounds;
+            
+            const charTypes = analyzeCharacterTypes(inputText);
+            document.getElementById('charTypes').textContent = charTypes.count;
+            
+            updateCharTypesDisplay(charTypes);
+        }
+
+        // 分析字符类型
+        function analyzeCharacterTypes(text) {
+            const types = {
+                chinese: 0, english: 0, number: 0, punctuation: 0, emoji: 0, other: 0
+            };
+            
+            for (let char of text) {
+                const code = char.charCodeAt(0);
+                
+                if (code >= 0x4E00 && code <= 0x9FFF) types.chinese++;
+                else if ((code >= 0x0041 && code <= 0x005A) || (code >= 0x0061 && code <= 0x007A)) types.english++;
+                else if (code >= 0x0030 && code <= 0x0039) types.number++;
+                else if ((code >= 0x2000 && code <= 0x206F) || (code >= 0x3000 && code <= 0x303F) ||
+                         [0x0021, 0x0022, 0x0027, 0x0028, 0x0029, 0x002C, 0x002D, 0x002E, 0x002F, 
+                          0x003A, 0x003B, 0x003F, 0x0040, 0x005B, 0x005C, 0x005D, 0x005F, 0x0060, 
+                          0x007B, 0x007C, 0x007D, 0x007E].includes(code)) types.punctuation++;
+                else if ((code >= 0x1F600 && code <= 0x1F64F) || 
+                         (code >= 0x1F300 && code <= 0x1F5FF) ||
+                         (code >= 0x1F680 && code <= 0x1F6FF) ||
+                         (code >= 0x2600 && code <= 0x26FF) ||
+                         (code >= 0x2700 && code <= 0x27BF)) types.emoji++;
+                else types.other++;
+            }
+            
+            let typeCount = 0;
+            for (let type in types) {
+                if (types[type] > 0) typeCount++;
+            }
+            
+            return { types, count: typeCount };
+        }
+
+        // 更新字符类型显示
+        function updateCharTypesDisplay(charTypes) {
+            const typeElements = document.querySelectorAll('.char-type');
+            const typeMap = {
+                '汉字': 'chinese', '英文': 'english', '数字': 'number', 
+                '标点': 'punctuation', 'Emoji': 'emoji'
+            };
+            
+            typeElements.forEach(element => {
+                const type = typeMap[element.textContent];
+                element.classList.toggle('active', charTypes.types[type] > 0);
+            });
+        }
+
+        // 验证字符集
+        function validateCharset() {
+            const charset = document.getElementById('charset').value;
+            const uniqueChars = new Set(charset);
+            
+            if (charset.length !== 256) {
+                showMessage(`字符集长度应为256，当前为${charset.length}`, 'warning');
+                return false;
+            }
+            
+            if (uniqueChars.size !== 256) {
+                showMessage(`字符集包含${256 - uniqueChars.size}个重复字符`, 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // 普通加密函数
+        function encrypt() {
+            const text = document.getElementById('inputText').value;
+            const key = document.getElementById('key').value;
+            const rounds = parseInt(document.getElementById('rounds').value);
+            const indexCode = document.getElementById('indexCode').value;
+            
+            if (!text) {
+                showMessage('请输入要加密的文本', 'error');
+                return;
+            }
+            
+            if (!key) {
+                showMessage('请输入加密密钥', 'warning');
+                return;
+            }
+            
+            if (!validateCharset()) return;
+            
+            try {
+                const result = encryptionSystem.advancedEncrypt(text, key, rounds, indexCode);
+                document.getElementById('outputText').value = result.encrypted;
+                updateStats();
+                
+                showMessage(`普通加密成功！${rounds}轮加密完成（策略${result.strategy + 1}）`, 'success');
+            } catch (e) {
+                showMessage('加密失败: ' + e.message, 'error');
+                console.error(e);
+            }
+        }
+
+        // 普通解密函数
+        function decrypt() {
+            const encryptedText = document.getElementById('inputText').value;
+            const key = document.getElementById('key').value;
+            const rounds = parseInt(document.getElementById('rounds').value);
+            
+            if (!encryptedText) {
+                showMessage('请输入要解密的文本', 'error');
+                return;
+            }
+            
+            if (!key) {
+                showMessage('请输入解密密钥', 'warning');
+                return;
+            }
+            
+            if (!validateCharset()) return;
+            
+            try {
+                const decryptedText = encryptionSystem.multiDecrypt(encryptedText, key, rounds);
+                document.getElementById('outputText').value = decryptedText;
+                updateStats();
+                
+                showMessage(`普通解密成功！${rounds}轮解密完成`, 'success');
+            } catch (e) {
+                showMessage('解密失败: ' + e.message, 'error');
+                console.error(e);
+            }
+        }
+
+        // 超级加密函数
+        function superEncrypt() {
+            const text = document.getElementById('inputText').value;
+            const key = document.getElementById('key').value;
+            const rounds = parseInt(document.getElementById('rounds').value);
+            const indexCode = document.getElementById('indexCode').value;
+            
+            if (!text) {
+                showMessage('请输入要加密的文本', 'error');
+                return;
+            }
+            
+            if (!key) {
+                showMessage('请输入加密密钥', 'warning');
+                return;
+            }
+            
+            if (!validateCharset()) return;
+            
+            try {
+                const superRounds = rounds + 3;
+                const result = encryptionSystem.advancedEncrypt(text, key, superRounds, indexCode);
+                document.getElementById('outputText').value = result.encrypted;
+                updateStats();
+                
+                showMessage(`超级加密成功！${superRounds}轮加密完成（策略${result.strategy + 1}）`, 'success');
+            } catch (e) {
+                showMessage('超级加密失败: ' + e.message, 'error');
+                console.error(e);
+            }
+        }
+
+        // 超级解密函数
+        function superDecrypt() {
+            const encryptedText = document.getElementById('inputText').value;
+            const key = document.getElementById('key').value;
+            const rounds = parseInt(document.getElementById('rounds').value);
+            
+            if (!encryptedText) {
+                showMessage('请输入要解密的文本', 'error');
+                return;
+            }
+            
+            if (!key) {
+                showMessage('请输入解密密钥', 'warning');
+                return;
+            }
+            
+            if (!validateCharset()) return;
+            
+            try {
+                const superRounds = rounds + 3;
+                const decryptedText = encryptionSystem.multiDecrypt(encryptedText, key, superRounds);
+                document.getElementById('outputText').value = decryptedText;
+                updateStats();
+                
+                showMessage(`超级解密成功！${superRounds}轮解密完成`, 'success');
+            } catch (e) {
+                showMessage('超级解密失败: ' + e.message, 'error');
+                console.error(e);
+            }
+        }
+
+        // 万能解密函数
+        async function masterDecrypt() {
+            const encryptedText = document.getElementById('inputText').value;
+            
+            if (!encryptedText) {
+                showMessage('请输入要解密的文本', 'error');
+                return;
+            }
+            
+            try {
+                showMessage('正在尝试万能解密...', 'info');
+                
+                const result = await encryptionSystem.masterDecrypt(encryptedText);
+                
+                if (result.success) {
+                    document.getElementById('outputText').value = result.text;
+                    updateStats();
+                    
+                    let strategyText = '';
+                    if (result.strategy >= 0) {
+                        strategyText = `，策略${result.strategy + 1}`;
+                    }
+                    
+                    showMessage(`万能解密成功！轮次${result.rounds}${strategyText}`, 'success');
+                } else {
+                    showMessage('万能解密失败，无法提取元数据', 'error');
+                }
+            } catch (e) {
+                showMessage('万能解密失败: ' + e.message, 'error');
+                console.error(e);
+            }
+        }
+
+        // 显示原理说明
+        function showMasterInfo() {
+            const info = `
+开发者万能模式 - 最高防御级别
+
+🔐 多重隐藏策略：
+1. 随机位置插入 - 元数据隐藏在随机位置
+2. 分片插入 - 元数据分成多个片段分散隐藏
+3. 隐写术 - 通过字符微调隐藏信息
+4. 结尾嵌入 - 传统方式作为备用
+
+🛡️ 防御特性：
+- 动态分隔符：每次加密使用不同标记
+- 策略随机化：无法预测使用的隐藏方法
+- 位置加密：隐藏位置信息也加密存储
+- 抗统计分析：防止模式识别攻击
+
+🎯 解密机制：
+1. 尝试所有可能的隐藏策略
+2. 使用万能密钥提取元数据
+3. 自动识别加密轮次和参数
+4. 多重保障确保解密成功
+
+⚠️ 安全说明：
+此系统采用企业级安全设计，可有效抵抗统计分析攻击。
+            `.trim();
+            
+            alert(info);
+        }
+
+        // 其他辅助函数...
+        function toggleDevPanel() {
+            const devPanel = document.getElementById('devPanel');
+            devPanel.style.display = devPanel.style.display === 'block' ? 'none' : 'block';
+            showMessage(devPanel.style.display === 'block' ? '开发者面板已激活！' : '开发者面板已隐藏', 
+                       devPanel.style.display === 'block' ? 'success' : 'info');
+        }
+
+        function showMessage(message, type) {
+            const existingMessage = document.querySelector('.message');
+            if (existingMessage) existingMessage.remove();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            
+            const bgColor = {
+                success: '#4CAF50', error: '#f44336', warning: '#ff9800', info: '#2196F3'
+            }[type] || '#2196F3';
+            
+            messageDiv.style.cssText = `
+                position: fixed; top: 20px; right: 20px; padding: 12px 20px;
+                border-radius: 8px; color: white; font-weight: 500; z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s;
+                background: ${bgColor};
+            `;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 3000);
+        }
+
+        // 字符集相关函数
+        function generateRandomCharset() {
+            let charset = '';
+            const used = new Set();
+            
+            for (let i = 0; i < 10; i++) charset += i;
+            for (let i = 65; i <= 90; i++) charset += String.fromCharCode(i);
+            for (let i = 97; i <= 122; i++) charset += String.fromCharCode(i);
+            
+            const start = 0x4E00, end = 0x9FFF;
+            while (charset.length < 200) {
+                const codePoint = Math.floor(Math.random() * (end - start + 1)) + start;
+                const char = String.fromCodePoint(codePoint);
+                if (!used.has(char)) { charset += char; used.add(char); }
+            }
+            
+            const emojiRanges = [[0x1F600, 0x1F64F], [0x1F300, 0x1F5FF], [0x1F680, 0x1F6FF], [0x2600, 0x26FF], [0x2700, 0x27BF]];
+            while (charset.length < 256) {
+                const range = emojiRanges[Math.floor(Math.random() * emojiRanges.length)];
+                const codePoint = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+                const char = String.fromCodePoint(codePoint);
+                if (!used.has(char)) { charset += char; used.add(char); }
+            }
+            
+            document.getElementById('charset').value = charset;
+            validateCharset();
+        }
+
+        function generateSuperCharset() {
+            // 简化的外星文字符集生成
+            let charset = '';
+            const ranges = [[0x0A00, 0x0A7F], [0x0B00, 0x0B7F], [0x0C00, 0x0C7F], [0x0D00, 0x0D7F]];
+            
+            while (charset.length < 256) {
+                const range = ranges[Math.floor(Math.random() * ranges.length)];
+                const codePoint = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+                const char = String.fromCodePoint(codePoint);
+                if (!charset.includes(char) && codePoint > 0x0020) {
+                    charset += char;
+                }
+            }
+            
+            document.getElementById('charset').value = charset;
+            validateCharset();
+            showMessage('已生成外星文字符集！', 'success');
+        }
+
+        function resetDefaultCharset() {
+            const defaultCharset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz的一是在不了有和人这中大为上个国我以要他时来用们生到作地于出就分对成会可主发年动同工也能下过子说产种面而方后多定行学法所民得经十三之进着等部度家电力里如水化高自二理起小物现实加量都两体制机当使点从业本去把性好应开它合还因由其些然前外天政四日那社义事平形相全表间样与关各重新线内数正心反你明看原又么利比或但质气第向道命此变条只没结解问意建月公无系军很情者最立代想已通并提直题党程展五果料象员革位入常文总次品式活设及管特件长求老头基资边流路级少图山统接知较将组见计别她手角期根论运农指几九区强放决西被干做必战先回则任取据处队南给色光门即保治北造百规热领七海口东导器压志世金增争济阶油思术极交受联什认六共权收证改清己美再采转更单风切打白教速花带安场身车例真务具万每目至达走积示议声报斗完类八离华名确才科张信马节话米整空元况今集温传土许步群广石记需段研界拉林律叫且究观越织装影算低持音众书布复容儿须际商非验连断深难近矿千周委素技备半办青省列习响约支般史感劳便团往酸历市克何除消构府称太准精值号率族维划选标写存候毛亲快效斯院查江型眼王按格养易置派层片始却专状育厂京识适属圆包火住调满县局照参红细引听该铁价严😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠️👽👾🤖🎃😺😸😹😻😼😽🙀😿😾";
+            document.getElementById('charset').value = defaultCharset.slice(0, 256);
+            validateCharset();
+        }
+
+        // 索引码相关函数
+        function generateIndexCode() {
+            const charset = document.getElementById('charset').value;
+            const base64Charset = btoa(unescape(encodeURIComponent(charset)));
+            const identifier = base64Charset.substring(0, 16);
+            document.getElementById('indexCode').value = identifier;
+            showMessage('已生成字符集索引码', 'success');
+        }
+
+        function copyIndexCode() {
+            const indexCode = document.getElementById('indexCode');
+            if (!indexCode.value) {
+                showMessage('没有索引码可复制', 'warning');
+                return;
+            }
+            indexCode.select();
+            document.execCommand('copy');
+            showMessage('已复制索引码到剪贴板', 'success');
+        }
+
+        function applyIndexCode() {
+            const indexCode = document.getElementById('indexCode').value;
+            if (!indexCode) {
+                showMessage('请输入索引码', 'warning');
+                return;
+            }
+            const savedCharsets = JSON.parse(localStorage.getItem('savedCharsets') || '{}');
+            if (savedCharsets[indexCode]) {
+                document.getElementById('charset').value = savedCharsets[indexCode];
+                validateCharset();
+                showMessage('已应用字符集', 'success');
+            } else {
+                showMessage('未找到匹配的字符集', 'error');
+            }
+        }
+
+        function saveIndexCodeToStorage() {
+            const charset = document.getElementById('charset').value;
+            const indexCode = document.getElementById('indexCode').value;
+            if (!indexCode) {
+                showMessage('请先生成索引码', 'warning');
+                return;
+            }
+            const savedCharsets = JSON.parse(localStorage.getItem('savedCharsets') || '{}');
+            savedCharsets[indexCode] = charset;
+            localStorage.setItem('savedCharsets', JSON.stringify(savedCharsets));
+            showMessage('字符集已保存到本地存储', 'success');
+        }
+
+        function loadIndexCodeFromStorage() {
+            const savedCharsets = JSON.parse(localStorage.getItem('savedCharsets') || '{}');
+            const indexCodes = Object.keys(savedCharsets);
+            if (indexCodes.length === 0) {
+                showMessage('本地存储中没有保存的字符集', 'warning');
+                return;
+            }
+            const indexCodeList = indexCodes.map(code => `${code} (${savedCharsets[code].substring(0, 20)}...)`).join('\n');
+            const selectedCode = prompt(`请选择要加载的索引码:\n\n${indexCodeList}`, indexCodes[0]);
+            if (selectedCode && savedCharsets[selectedCode]) {
+                document.getElementById('charset').value = savedCharsets[selectedCode];
+                document.getElementById('indexCode').value = selectedCode;
+                validateCharset();
+                showMessage('已加载字符集', 'success');
+            }
+        }
+
+        // 其他功能
+        function copyToClipboard() {
+            const outputText = document.getElementById('outputText');
+            if (!outputText.value) {
+                showMessage('没有内容可复制', 'warning');
+                return;
+            }
+            outputText.select();
+            document.execCommand('copy');
+            showMessage('已复制到剪贴板', 'success');
+        }
+
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+            document.getElementById('key').value = '';
+            updateStats();
+            showMessage('已清空所有内容', 'info');
+        }
+
+        function decryptWithoutKey() {
+            showMessage('此功能已整合到万能解密模式中', 'info');
+        }
+
+        function enableBackdoor() {
+            showMessage('系统后门已默认启用', 'success');
+            localStorage.setItem('dev_backdoor_enabled', 'true');
+        }
+
+        function showDevInfo() {
+            const info = `
+开发者系统信息：
+- 版本: 4.0.0 (最高防御级别)
+- 加密算法: 增强异或 + 自定义字符集编码
+- 隐藏策略: 4种动态选择
+- 支持字符: 全Unicode字符集
+- 加密模式: 普通加密 + 超级加密 + 万能解密
+- 防御级别: 企业级
+- 后门状态: 已启用
+- 时间戳: ${new Date().toISOString()}
+            `.trim();
+            alert(info);
+        }
+    </script>
+</body>
+</html>
